@@ -8,7 +8,9 @@ const nextConfig = {
   },
   images: {
     unoptimized: true,
+    loader: "akamai",
+    path: "/",
   },
-}
+};
 
-export default nextConfig
+export default nextConfig;
