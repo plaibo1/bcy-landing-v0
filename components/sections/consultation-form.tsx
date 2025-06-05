@@ -163,7 +163,10 @@ export function ConsultationForm() {
 
   return (
     <>
-      <section className="py-24 bg-gradient-to-br from-gray-50 via-white to-gray-100">
+      <section
+        id="consultation"
+        className="py-24 bg-gradient-to-br from-gray-50 via-white to-gray-100"
+      >
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
