@@ -1,6 +1,6 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Gavel, Phone } from "lucide-react"
+import Link from "next/link";
+import { Gavel, Phone } from "lucide-react";
+import { HeaderButton } from "../featureComponents/header-button";
 
 export function Header() {
   return (
@@ -11,16 +11,28 @@ export function Header() {
           <span className="text-xl font-bold text-gray-900">ЮрПомощь</span>
         </div>
         <nav className="hidden md:flex items-center space-x-8">
-          <Link href="#services" className="text-sm font-medium hover:text-primary transition-colors">
+          <Link
+            href="#services"
+            className="text-sm font-medium hover:text-primary transition-colors"
+          >
             Услуги
           </Link>
-          <Link href="#stages" className="text-sm font-medium hover:text-primary transition-colors">
+          <Link
+            href="#stages"
+            className="text-sm font-medium hover:text-primary transition-colors"
+          >
             Этапы
           </Link>
-          <Link href="#tariffs" className="text-sm font-medium hover:text-primary transition-colors">
+          <Link
+            href="#tariffs"
+            className="text-sm font-medium hover:text-primary transition-colors"
+          >
             Тарифы
           </Link>
-          <Link href="#reviews" className="text-sm font-medium hover:text-primary transition-colors">
+          <Link
+            href="#reviews"
+            className="text-sm font-medium hover:text-primary transition-colors"
+          >
             Отзывы
           </Link>
         </nav>
@@ -29,9 +41,10 @@ export function Header() {
             <Phone className="h-4 w-4 text-primary" />
             <span className="text-sm font-medium">+7 (800) 123-45-67</span>
           </div>
-          <Button className="bg-primary hover:bg-primary-600">Консультация</Button>
+
+          <HeaderButton />
         </div>
       </div>
     </header>
-  )
+  );
 }
