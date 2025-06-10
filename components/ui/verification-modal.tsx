@@ -213,7 +213,7 @@ export function VerificationModal({
               <button
                 onClick={handleResendCode}
                 disabled={isResending}
-                className="text-blue-600 hover:text-blue-800 font-medium"
+                className="text-primary hover:text-primary-800 font-medium"
               >
                 {isResending ? "Отправка..." : "Отправить код повторно"}
               </button>
@@ -234,7 +234,7 @@ export function VerificationModal({
             type="button"
             onClick={handleSubmit}
             disabled={isSubmitting || code.some((digit) => !digit)}
-            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
+            className="w-full sm:w-auto bg-primary hover:bg-primary-600"
           >
             {isSubmitting ? "Проверка..." : "Подтвердить"}
           </Button>
