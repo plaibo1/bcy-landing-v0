@@ -80,6 +80,17 @@ export function ConsultationFormHero() {
     )}-${normalizedNumber.slice(7, 9)}-${normalizedNumber.slice(9, 11)}`;
   };
 
+  // Маска для паспортных данных
+  const formatPassportNumber = (value: string) => {
+    // Удаляем все нецифровые символы
+    const passportNumber = value.replace(/\D/g, "");
+
+    // Применяем маску XXXX XXXXXX
+    if (passportNumber.length === 0) return "";
+    if (passportNumber.length <= 4) return passportNumber;
+    return `${passportNumber.slice(0, 4)} ${passportNumber.slice(4, 10)}`;
+  };
+
   // Валидация полей
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -119,26 +130,26 @@ export function ConsultationFormHero() {
       newErrors.phone = "Номер телефона должен содержать 11 цифр";
     }
 
-    // Валидация email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email.trim()) {
-      newErrors.email = "Email обязателен для заполнения";
-    } else if (!emailRegex.test(formData.email.trim())) {
-      newErrors.email = "Введите корректный email адрес";
+    // Валидация email (только если заполнен)
+    if (formData.email.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email.trim())) {
+        newErrors.email = "Введите корректный email адрес";
+      }
     }
 
-    // Валидация года рождения
-    const currentYear = new Date().getFullYear();
-    const birthYear = Number.parseInt(formData.birthYear);
-    if (!formData.birthYear.trim()) {
-      newErrors.birthYear = "Год рождения обязателен для заполнения";
-    } else if (
-      isNaN(birthYear) ||
-      birthYear < 1940 ||
-      birthYear > currentYear - 18
-    ) {
-      newErrors.birthYear =
-        "Введите корректный год рождения (возраст от 18 лет)";
+    // Валидация года рождения (только если заполнен)
+    if (formData.birthYear.trim()) {
+      const currentYear = new Date().getFullYear();
+      const birthYear = Number.parseInt(formData.birthYear);
+      if (
+        isNaN(birthYear) ||
+        birthYear < 1940 ||
+        birthYear > currentYear - 18
+      ) {
+        newErrors.birthYear =
+          "Введите корректный год рождения (возраст от 18 лет)";
+      }
     }
 
     setErrors(newErrors);
@@ -148,6 +159,8 @@ export function ConsultationFormHero() {
   const handleInputChange = (field: keyof FormData, value: string) => {
     if (field === "phone") {
       value = formatPhoneNumber(value);
+    } else if (field === "passport") {
+      value = formatPassportNumber(value);
     }
 
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -221,7 +234,7 @@ export function ConsultationFormHero() {
 
   return (
     <>
-      <Card className="w-full max-w-3xl mx-auto bg-white/85 backdrop-blur-sm shadow-xl border-0 mt-12">
+      <Card className="w-full max-w-3xl mx-auto bg-white/80 backdrop-blur-sm shadow-xl border-0 mt-12">
         <CardHeader>
           <CardTitle className="text-center text-2xl">
             Получить консультацию
@@ -304,7 +317,7 @@ export function ConsultationFormHero() {
                 )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Email *</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -323,7 +336,7 @@ export function ConsultationFormHero() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="birthYear">Год рождения *</Label>
+                <Label htmlFor="birthYear">Год рождения</Label>
                 <Input
                   id="birthYear"
                   type="number"
@@ -346,12 +359,13 @@ export function ConsultationFormHero() {
                 <Label htmlFor="passport">Паспортные данные</Label>
                 <Input
                   id="passport"
-                  placeholder="1234 567890 (необязательно)"
+                  placeholder="1234 567890"
                   value={formData.passport}
                   onChange={(e) =>
                     handleInputChange("passport", e.target.value)
                   }
                   className="h-12 focus:ring-primary"
+                  maxLength={11}
                 />
               </div>
               <div className="space-y-2">

@@ -11,23 +11,37 @@ import { VerificationModal } from "@/components/ui/verification-modal";
 import { MessageCircle, Phone, Mail } from "lucide-react";
 
 interface FormData {
-  name: string;
+  firstName: string;
+  lastName: string;
+  middleName: string;
   phone: string;
   email: string;
+  birthYear: string;
+  passport: string;
+  address: string;
 }
 
 interface FormErrors {
-  name?: string;
+  firstName?: string;
+  lastName?: string;
+  middleName?: string;
   phone?: string;
   email?: string;
+  birthYear?: string;
 }
 
 export function ConsultationForm() {
   const [formData, setFormData] = useState<FormData>({
-    name: "",
+    firstName: "",
+    lastName: "",
+    middleName: "",
     phone: "",
     email: "",
+    birthYear: "",
+    passport: "",
+    address: "",
   });
+
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
@@ -42,7 +56,7 @@ export function ConsultationForm() {
       ? "7" + phoneNumber.slice(1)
       : phoneNumber;
 
-    // Применяем маску +7 (999) 999-99-99
+    // Применяем маску +7 (999) 999-999-99
     if (normalizedNumber.length === 0) return "";
     if (normalizedNumber.length <= 1) return `+7`;
     if (normalizedNumber.length <= 4) return `+7 (${normalizedNumber.slice(1)}`;
@@ -61,15 +75,46 @@ export function ConsultationForm() {
     )}-${normalizedNumber.slice(7, 9)}-${normalizedNumber.slice(9, 11)}`;
   };
 
+  // Маска для паспортных данных
+  const formatPassportNumber = (value: string) => {
+    // Удаляем все нецифровые символы
+    const passportNumber = value.replace(/\D/g, "");
+
+    // Применяем маску XXXX XXXXXX
+    if (passportNumber.length === 0) return "";
+    if (passportNumber.length <= 4) return passportNumber;
+    return `${passportNumber.slice(0, 4)} ${passportNumber.slice(4, 10)}`;
+  };
+
   // Валидация полей
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
     // Валидация имени
-    if (!formData.name.trim()) {
-      newErrors.name = "Имя обязательно для заполнения";
-    } else if (formData.name.trim().length < 2) {
-      newErrors.name = "Имя должно содержать минимум 2 символа";
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = "Имя обязательно для заполнения";
+    } else if (formData.firstName.trim().length < 2) {
+      newErrors.firstName = "Имя должно содержать минимум 2 символа";
+    } else if (!/^[а-яёА-ЯЁ\s-]+$/.test(formData.firstName.trim())) {
+      newErrors.firstName = "Имя должно содержать только русские буквы";
+    }
+
+    // Валидация фамилии
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = "Фамилия обязательна для заполнения";
+    } else if (formData.lastName.trim().length < 2) {
+      newErrors.lastName = "Фамилия должна содержать минимум 2 символа";
+    } else if (!/^[а-яёА-ЯЁ\s-]+$/.test(formData.lastName.trim())) {
+      newErrors.lastName = "Фамилия должна содержать только русские буквы";
+    }
+
+    // Валидация отчества
+    if (!formData.middleName.trim()) {
+      newErrors.middleName = "Отчество обязательно для заполнения";
+    } else if (formData.middleName.trim().length < 2) {
+      newErrors.middleName = "Отчество должно содержать минимум 2 символа";
+    } else if (!/^[а-яёА-ЯЁ\s-]+$/.test(formData.middleName.trim())) {
+      newErrors.middleName = "Отчество должно содержать только русские буквы";
     }
 
     // Валидация телефона
@@ -80,12 +125,26 @@ export function ConsultationForm() {
       newErrors.phone = "Номер телефона должен содержать 11 цифр";
     }
 
-    // Валидация email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email.trim()) {
-      newErrors.email = "Email обязателен для заполнения";
-    } else if (!emailRegex.test(formData.email.trim())) {
-      newErrors.email = "Введите корректный email адрес";
+    // Валидация email (только если заполнен)
+    if (formData.email.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email.trim())) {
+        newErrors.email = "Введите корректный email адрес";
+      }
+    }
+
+    // Валидация года рождения (только если заполнен)
+    if (formData.birthYear.trim()) {
+      const currentYear = new Date().getFullYear();
+      const birthYear = Number.parseInt(formData.birthYear);
+      if (
+        isNaN(birthYear) ||
+        birthYear < 1940 ||
+        birthYear > currentYear - 18
+      ) {
+        newErrors.birthYear =
+          "Введите корректный год рождения (возраст от 18 лет)";
+      }
     }
 
     setErrors(newErrors);
@@ -95,11 +154,14 @@ export function ConsultationForm() {
   const handleInputChange = (field: keyof FormData, value: string) => {
     if (field === "phone") {
       value = formatPhoneNumber(value);
+    } else if (field === "passport") {
+      value = formatPassportNumber(value);
     }
+
     setFormData((prev) => ({ ...prev, [field]: value }));
 
     // Очищаем ошибку для поля при изменении
-    if (errors[field]) {
+    if (errors[field as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
   };
@@ -120,8 +182,7 @@ export function ConsultationForm() {
       // Открываем модальное окно для подтверждения
       setIsVerificationModalOpen(true);
     } catch (error) {
-      // Здесь можно добавить обработку ошибок
-      console.error("Ошибка при отправке заявки:", error);
+      alert("Произошла ошибка при отправке заявки. Попробуйте еще раз.");
     } finally {
       setIsSubmitting(false);
     }
@@ -153,9 +214,14 @@ export function ConsultationForm() {
   const finishSubmission = () => {
     // Сброс формы после успешной отправки
     setFormData({
-      name: "",
+      firstName: "",
+      lastName: "",
+      middleName: "",
       phone: "",
       email: "",
+      birthYear: "",
+      passport: "",
+      address: "",
     });
 
     alert("Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.");
@@ -169,7 +235,7 @@ export function ConsultationForm() {
       >
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="grid lg:grid-cols-2 gap-16 items-start">
               {/* Левая часть - информация */}
               <div className="space-y-8">
                 <div>
@@ -239,97 +305,233 @@ export function ConsultationForm() {
               {/* Правая часть - форма */}
               <div>
                 <Card className="bg-white shadow-2xl border-0 overflow-hidden">
-                  <CardContent className="p-8">
-                    <div className="text-center mb-8">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                  <CardContent className="p-6">
+                    <div className="text-center mb-6">
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">
                         Заполните форму
                       </h3>
-                      <p className="text-gray-600">
+                      <p className="text-gray-600 text-sm">
                         И получите консультацию в течение 15 минут
                       </p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                      <div className="space-y-2">
-                        <Label
-                          htmlFor="consultation-name"
-                          className="text-sm font-medium text-gray-700"
-                        >
-                          Ваше имя *
-                        </Label>
-                        <Input
-                          id="consultation-name"
-                          placeholder="Введите ваше имя"
-                          value={formData.name}
-                          onChange={(e) =>
-                            handleInputChange("name", e.target.value)
-                          }
-                          className={`h-12 focus:ring-primary focus:border-primary ${
-                            errors.name
-                              ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                              : ""
-                          }`}
-                        />
-                        {errors.name && (
-                          <p className="text-red-500 text-sm">{errors.name}</p>
-                        )}
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                      {/* ФИО в одну строку */}
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="space-y-1">
+                          <Label
+                            htmlFor="consultation-firstName"
+                            className="text-xs font-medium text-gray-700"
+                          >
+                            Имя *
+                          </Label>
+                          <Input
+                            id="consultation-firstName"
+                            placeholder="Иван"
+                            value={formData.firstName}
+                            onChange={(e) =>
+                              handleInputChange("firstName", e.target.value)
+                            }
+                            className={`h-10 text-sm focus:ring-primary focus:border-primary ${
+                              errors.firstName
+                                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                                : ""
+                            }`}
+                          />
+                          {errors.firstName && (
+                            <p className="text-red-500 text-xs">
+                              {errors.firstName}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label
+                            htmlFor="consultation-lastName"
+                            className="text-xs font-medium text-gray-700"
+                          >
+                            Фамилия *
+                          </Label>
+                          <Input
+                            id="consultation-lastName"
+                            placeholder="Иванов"
+                            value={formData.lastName}
+                            onChange={(e) =>
+                              handleInputChange("lastName", e.target.value)
+                            }
+                            className={`h-10 text-sm focus:ring-primary focus:border-primary ${
+                              errors.lastName
+                                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                                : ""
+                            }`}
+                          />
+                          {errors.lastName && (
+                            <p className="text-red-500 text-xs">
+                              {errors.lastName}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label
+                            htmlFor="consultation-middleName"
+                            className="text-xs font-medium text-gray-700"
+                          >
+                            Отчество *
+                          </Label>
+                          <Input
+                            id="consultation-middleName"
+                            placeholder="Иванович"
+                            value={formData.middleName}
+                            onChange={(e) =>
+                              handleInputChange("middleName", e.target.value)
+                            }
+                            className={`h-10 text-sm focus:ring-primary focus:border-primary ${
+                              errors.middleName
+                                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                                : ""
+                            }`}
+                          />
+                          {errors.middleName && (
+                            <p className="text-red-500 text-xs">
+                              {errors.middleName}
+                            </p>
+                          )}
+                        </div>
                       </div>
 
-                      <div className="space-y-2">
-                        <Label
-                          htmlFor="consultation-phone"
-                          className="text-sm font-medium text-gray-700"
-                        >
-                          Номер телефона *
-                        </Label>
-                        <Input
-                          id="consultation-phone"
-                          type="tel"
-                          placeholder="+7 (999) 999-99-99"
-                          value={formData.phone}
-                          onChange={(e) =>
-                            handleInputChange("phone", e.target.value)
-                          }
-                          className={`h-12 focus:ring-primary focus:border-primary ${
-                            errors.phone
-                              ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                              : ""
-                          }`}
-                        />
-                        {errors.phone && (
-                          <p className="text-red-500 text-sm">{errors.phone}</p>
-                        )}
+                      {/* Контактные данные */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <Label
+                            htmlFor="consultation-phone"
+                            className="text-xs font-medium text-gray-700"
+                          >
+                            Телефон *
+                          </Label>
+                          <Input
+                            id="consultation-phone"
+                            type="tel"
+                            placeholder="+7 (999) 999-99-99"
+                            value={formData.phone}
+                            onChange={(e) =>
+                              handleInputChange("phone", e.target.value)
+                            }
+                            className={`h-10 text-sm focus:ring-primary focus:border-primary ${
+                              errors.phone
+                                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                                : ""
+                            }`}
+                          />
+                          {errors.phone && (
+                            <p className="text-red-500 text-xs">
+                              {errors.phone}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label
+                            htmlFor="consultation-email"
+                            className="text-xs font-medium text-gray-700"
+                          >
+                            Email
+                          </Label>
+                          <Input
+                            id="consultation-email"
+                            type="email"
+                            placeholder="ivan@example.com"
+                            value={formData.email}
+                            onChange={(e) =>
+                              handleInputChange("email", e.target.value)
+                            }
+                            className={`h-10 text-sm focus:ring-primary focus:border-primary ${
+                              errors.email
+                                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                                : ""
+                            }`}
+                          />
+                          {errors.email && (
+                            <p className="text-red-500 text-xs">
+                              {errors.email}
+                            </p>
+                          )}
+                        </div>
                       </div>
 
-                      <div className="space-y-2">
-                        <Label
-                          htmlFor="consultation-email"
-                          className="text-sm font-medium text-gray-700"
-                        >
-                          Email *
-                        </Label>
-                        <Input
-                          id="consultation-email"
-                          type="email"
-                          placeholder="example@mail.ru"
-                          value={formData.email}
-                          onChange={(e) =>
-                            handleInputChange("email", e.target.value)
-                          }
-                          className={`h-12 focus:ring-primary focus:border-primary ${
-                            errors.email
-                              ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                              : ""
-                          }`}
-                        />
-                        {errors.email && (
-                          <p className="text-red-500 text-sm">{errors.email}</p>
-                        )}
+                      {/* Дополнительные данные */}
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className="space-y-1">
+                          <Label
+                            htmlFor="consultation-birthYear"
+                            className="text-xs font-medium text-gray-700"
+                          >
+                            Год рождения
+                          </Label>
+                          <Input
+                            id="consultation-birthYear"
+                            type="number"
+                            placeholder="1985"
+                            min="1940"
+                            max="2005"
+                            value={formData.birthYear}
+                            onChange={(e) =>
+                              handleInputChange("birthYear", e.target.value)
+                            }
+                            className={`h-10 text-sm focus:ring-primary focus:border-primary ${
+                              errors.birthYear
+                                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                                : ""
+                            }`}
+                          />
+                          {errors.birthYear && (
+                            <p className="text-red-500 text-xs">
+                              {errors.birthYear}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label
+                            htmlFor="consultation-passport"
+                            className="text-xs font-medium text-gray-700"
+                          >
+                            Паспорт
+                          </Label>
+                          <Input
+                            id="consultation-passport"
+                            placeholder="1234 567890"
+                            value={formData.passport}
+                            onChange={(e) =>
+                              handleInputChange("passport", e.target.value)
+                            }
+                            className="h-10 text-sm focus:ring-primary focus:border-primary"
+                            maxLength={11}
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label
+                            htmlFor="consultation-address"
+                            className="text-xs font-medium text-gray-700"
+                          >
+                            Адрес
+                          </Label>
+                          <Input
+                            id="consultation-address"
+                            placeholder="г. Москва"
+                            value={formData.address}
+                            onChange={(e) =>
+                              handleInputChange("address", e.target.value)
+                            }
+                            className="h-10 text-sm focus:ring-primary focus:border-primary"
+                          />
+                        </div>
                       </div>
 
                       <Button
                         type="submit"
-                        className="w-full bg-primary hover:bg-primary-600 text-white h-14 text-lg font-medium rounded-xl"
+                        className="w-full bg-primary hover:bg-primary-600 text-white h-12 text-base font-medium rounded-xl mt-6"
                         disabled={isSubmitting}
                       >
                         {isSubmitting
@@ -341,10 +543,6 @@ export function ConsultationForm() {
                         Нажимая кнопку, вы соглашаетесь с{" "}
                         <span className="text-primary hover:text-primary-600 cursor-pointer">
                           политикой конфиденциальности
-                        </span>{" "}
-                        и{" "}
-                        <span className="text-primary hover:text-primary-600 cursor-pointer">
-                          пользовательским соглашением
                         </span>
                       </p>
                     </form>
