@@ -1,4 +1,4 @@
-import { Users, Award, Clock, Shield } from "lucide-react";
+import { Users, TrendingUp, Clock, Building } from "lucide-react";
 
 export function Achievements() {
   return (
@@ -14,32 +14,42 @@ export function Achievements() {
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
           <div className="text-center">
-            <div className="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="bg-blue-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
               <Users className="h-10 w-10 text-blue-600" />
             </div>
-            <div className="text-4xl font-bold text-gray-900 mb-3">2000+</div>
-            <div className="text-lg text-gray-600">Довольных клиентов</div>
+            <div className="text-4xl font-bold text-gray-900 mb-3">1056</div>
+            <div className="text-lg text-gray-600 leading-relaxed">
+              Успешных завершенных дел по всей России
+            </div>
           </div>
           <div className="text-center">
-            <div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Award className="h-10 w-10 text-green-600" />
+            <div className="bg-emerald-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <TrendingUp className="h-10 w-10 text-emerald-600" />
             </div>
-            <div className="text-4xl font-bold text-gray-900 mb-3">95%</div>
-            <div className="text-lg text-gray-600">Успешных дел</div>
+            <div className="text-4xl font-bold text-gray-900 mb-3">50 млн</div>
+            <div className="text-lg text-gray-600 leading-relaxed">
+              Списанных долгов
+            </div>
           </div>
           <div className="text-center">
-            <div className="bg-purple-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Clock className="h-10 w-10 text-purple-600" />
+            <div className="bg-amber-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Clock className="h-10 w-10 text-amber-600" />
             </div>
-            <div className="text-4xl font-bold text-gray-900 mb-3">8</div>
-            <div className="text-lg text-gray-600">Месяцев в среднем</div>
+            <div className="text-4xl font-bold text-gray-900 mb-3">10 лет</div>
+            <div className="text-lg text-gray-600 leading-relaxed">
+              Работаем с 2015 года!
+            </div>
           </div>
           <div className="text-center">
-            <div className="bg-orange-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Shield className="h-10 w-10 text-orange-600" />
+            <div className="bg-purple-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Building className="h-10 w-10 text-purple-600" />
             </div>
-            <div className="text-4xl font-bold text-gray-900 mb-3">10+</div>
-            <div className="text-lg text-gray-600">Лет опыта</div>
+            <div className="text-4xl font-bold text-gray-900 mb-3">
+              30 офисов
+            </div>
+            <div className="text-lg text-gray-600 leading-relaxed">
+              С успешными списаниями растем и мы!
+            </div>
           </div>
         </div>
       </div>
