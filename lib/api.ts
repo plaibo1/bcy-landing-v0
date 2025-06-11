@@ -6,10 +6,10 @@ export interface ApiFormData {
   middleName: string;
   lastName: string;
   phone: string;
-  email: string;
-  passportSerial: string;
-  passportNumber: string;
-  address: string;
+  email?: string;
+  passportSerial?: string;
+  passportNumber?: string;
+  address?: string;
 }
 
 /**
@@ -77,10 +77,10 @@ function transformFormDataForApi(formData: FormData): ApiFormData {
     middleName: formData.middleName.trim(),
     lastName: formData.lastName.trim(),
     phone: normalizedPhone,
-    email: formData.email.trim(),
-    passportSerial,
-    passportNumber,
-    address: formData.address.trim(),
+    email: formData.email.trim() || undefined,
+    passportSerial: passportSerial || undefined,
+    passportNumber: passportNumber || undefined,
+    address: formData.address.trim() || undefined,
   };
 }
 

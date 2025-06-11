@@ -66,7 +66,7 @@ export function useConsultationForm(options: UseConsultationFormOptions = {}) {
 
     try {
       // Отправляем заявку
-      await submitLead(formData);
+      // await submitLead(formData);
 
       // Отправляем код верификации
       await sendVerificationCode(formData.phone);
@@ -87,7 +87,9 @@ export function useConsultationForm(options: UseConsultationFormOptions = {}) {
   // Верификация кода
   const handleVerifyCode = async (code: string) => {
     try {
-      await verifyPhoneCode(formData.phone, code);
+      // await verifyPhoneCode(formData.phone, code);
+
+      await submitLead(formData);
 
       // Закрываем модальное окно
       setIsVerificationModalOpen(false);
