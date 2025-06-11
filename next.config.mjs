@@ -11,6 +11,7 @@ const nextConfig = {
     loader: "akamai",
     path: "/",
   },
+  output: "standalone",
 };
 
 export default nextConfig;
