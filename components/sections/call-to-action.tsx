@@ -15,7 +15,7 @@ export function CallToAction() {
   return (
     <section className="py-16 bg-gradient-to-br from-gray-50 via-white to-gray-100 text-gray-900 relative overflow-hidden">
       {/* Паттерн сетки */}
-      <div className="absolute inset-0 opacity-30">
+      {/* <div className="absolute inset-0 opacity-30">
         <svg
           className="absolute inset-0 h-full w-full"
           xmlns="http://www.w3.org/2000/svg"
@@ -40,7 +40,7 @@ export function CallToAction() {
           </defs>
           <rect width="100%" height="100%" fill="url(#grid-pattern)" />
         </svg>
-      </div>
+      </div> */}
 
       {/* Градиентные акценты */}
       <div className="absolute top-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
