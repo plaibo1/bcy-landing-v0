@@ -36,6 +36,10 @@ export async function POST(request: NextRequest) {
       }
     );
 
+    if (response.status === 200) {
+      return NextResponse.json(response, { status: response.status });
+    }
+
     // Получаем ответ от внешнего API
     const data = await response.json();
 
