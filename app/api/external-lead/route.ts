@@ -1,11 +1,16 @@
-import { type NextRequest, NextResponse } from "next/server"
-
-const EXTERNAL_API_BASE_URL = "https://example.com"
+import { type NextRequest, NextResponse } from "next/server";
+import type { ApiFormData } from "@/lib/api";
+import { EXTERNAL_API_BASE_URL } from "@/consts";
 
 export async function POST(request: NextRequest) {
   try {
-    // Получаем данные из запроса
-    const body = await request.json()
+    // Получаем уже трансформированные данные из запроса
+    const body: ApiFormData = await request.json();
+
+    // Логируем данные в режиме разработки
+    if (process.env.NODE_ENV === "development") {
+      console.log("📤 Sending to external API:", body);
+    }
 
     // Проксируем запрос на внешнее API
     const response = await fetch(`${EXTERNAL_API_BASE_URL}/v1/external-lead`, {
@@ -18,15 +23,24 @@ export async function POST(request: NextRequest) {
         }),
       },
       body: JSON.stringify(body),
-    })
+    });
+
+    if (response.status === 201) {
+      return NextResponse.json(response, { status: response.status });
+    }
 
     // Получаем ответ от внешнего API
-    const data = await response.json()
+    const data = await response.json();
+
+    // Логируем ответ в режиме разработки
+    if (process.env.NODE_ENV === "development") {
+      console.log("📥 Response from external API:", data);
+    }
 
     // Возвращаем ответ с тем же статусом
-    return NextResponse.json(data, { status: response.status })
+    return NextResponse.json(data, { status: response.status });
   } catch (error) {
-    console.error("Ошибка при проксировании запроса external-lead:", error)
+    console.error("Ошибка при проксировании запроса external-lead:", error);
 
     return NextResponse.json(
       {
@@ -34,7 +48,7 @@ export async function POST(request: NextRequest) {
         error: "Ошибка сервера при отправке заявки",
         code: "PROXY_ERROR",
       },
-      { status: 500 },
-    )
+      { status: 500 }
+    );
   }
 }

@@ -1,231 +1,33 @@
 "use client";
 
-import type React from "react";
-
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { VerificationModal } from "@/components/ui/verification-modal";
 import { MessageCircle, Phone, Mail } from "lucide-react";
-
-interface FormData {
-  firstName: string;
-  lastName: string;
-  middleName: string;
-  phone: string;
-  email: string;
-  birthYear: string;
-  passport: string;
-  address: string;
-}
-
-interface FormErrors {
-  firstName?: string;
-  lastName?: string;
-  middleName?: string;
-  phone?: string;
-  email?: string;
-  birthYear?: string;
-}
+import { useConsultationForm } from "@/hooks/use-consultation-form";
+import { PrivacyText } from "../ui/privacy-text";
 
 export function ConsultationForm() {
-  const [formData, setFormData] = useState<FormData>({
-    firstName: "",
-    lastName: "",
-    middleName: "",
-    phone: "",
-    email: "",
-    birthYear: "",
-    passport: "",
-    address: "",
+  const {
+    formData,
+    errors,
+    isSubmitting,
+    isVerificationModalOpen,
+    handleInputChange,
+    handleSubmit,
+    handleVerifyCode,
+    handleResendCode,
+    closeVerificationModal,
+  } = useConsultationForm({
+    onSuccess: () => {
+      alert("Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.");
+    },
+    onError: (error) => {
+      alert(`Ошибка: ${error}`);
+    },
   });
-
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
-
-  // Маска для телефона
-  const formatPhoneNumber = (value: string) => {
-    // Удаляем все нецифровые символы
-    const phoneNumber = value.replace(/\D/g, "");
-
-    // Если номер начинается с 8, заменяем на 7
-    const normalizedNumber = phoneNumber.startsWith("8")
-      ? "7" + phoneNumber.slice(1)
-      : phoneNumber;
-
-    // Применяем маску +7 (999) 999-999-99
-    if (normalizedNumber.length === 0) return "";
-    if (normalizedNumber.length <= 1) return `+7`;
-    if (normalizedNumber.length <= 4) return `+7 (${normalizedNumber.slice(1)}`;
-    if (normalizedNumber.length <= 7)
-      return `+7 (${normalizedNumber.slice(1, 4)}) ${normalizedNumber.slice(
-        4
-      )}`;
-    if (normalizedNumber.length <= 9)
-      return `+7 (${normalizedNumber.slice(1, 4)}) ${normalizedNumber.slice(
-        4,
-        7
-      )}-${normalizedNumber.slice(7)}`;
-    return `+7 (${normalizedNumber.slice(1, 4)}) ${normalizedNumber.slice(
-      4,
-      7
-    )}-${normalizedNumber.slice(7, 9)}-${normalizedNumber.slice(9, 11)}`;
-  };
-
-  // Маска для паспортных данных
-  const formatPassportNumber = (value: string) => {
-    // Удаляем все нецифровые символы
-    const passportNumber = value.replace(/\D/g, "");
-
-    // Применяем маску XXXX XXXXXX
-    if (passportNumber.length === 0) return "";
-    if (passportNumber.length <= 4) return passportNumber;
-    return `${passportNumber.slice(0, 4)} ${passportNumber.slice(4, 10)}`;
-  };
-
-  // Валидация полей
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-
-    // Валидация имени
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = "Имя обязательно для заполнения";
-    } else if (formData.firstName.trim().length < 2) {
-      newErrors.firstName = "Имя должно содержать минимум 2 символа";
-    } else if (!/^[а-яёА-ЯЁ\s-]+$/.test(formData.firstName.trim())) {
-      newErrors.firstName = "Имя должно содержать только русские буквы";
-    }
-
-    // Валидация фамилии
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = "Фамилия обязательна для заполнения";
-    } else if (formData.lastName.trim().length < 2) {
-      newErrors.lastName = "Фамилия должна содержать минимум 2 символа";
-    } else if (!/^[а-яёА-ЯЁ\s-]+$/.test(formData.lastName.trim())) {
-      newErrors.lastName = "Фамилия должна содержать только русские буквы";
-    }
-
-    // Валидация отчества
-    if (!formData.middleName.trim()) {
-      newErrors.middleName = "Отчество обязательно для заполнения";
-    } else if (formData.middleName.trim().length < 2) {
-      newErrors.middleName = "Отчество должно содержать минимум 2 символа";
-    } else if (!/^[а-яёА-ЯЁ\s-]+$/.test(formData.middleName.trim())) {
-      newErrors.middleName = "Отчество должно содержать только русские буквы";
-    }
-
-    // Валидация телефона
-    const phoneDigits = formData.phone.replace(/\D/g, "");
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Номер телефона обязателен для заполнения";
-    } else if (phoneDigits.length !== 11) {
-      newErrors.phone = "Номер телефона должен содержать 11 цифр";
-    }
-
-    // Валидация email (только если заполнен)
-    if (formData.email.trim()) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email.trim())) {
-        newErrors.email = "Введите корректный email адрес";
-      }
-    }
-
-    // Валидация года рождения (только если заполнен)
-    if (formData.birthYear.trim()) {
-      const currentYear = new Date().getFullYear();
-      const birthYear = Number.parseInt(formData.birthYear);
-      if (
-        isNaN(birthYear) ||
-        birthYear < 1940 ||
-        birthYear > currentYear - 18
-      ) {
-        newErrors.birthYear =
-          "Введите корректный год рождения (возраст от 18 лет)";
-      }
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleInputChange = (field: keyof FormData, value: string) => {
-    if (field === "phone") {
-      value = formatPhoneNumber(value);
-    } else if (field === "passport") {
-      value = formatPassportNumber(value);
-    }
-
-    setFormData((prev) => ({ ...prev, [field]: value }));
-
-    // Очищаем ошибку для поля при изменении
-    if (errors[field as keyof FormErrors]) {
-      setErrors((prev) => ({ ...prev, [field]: undefined }));
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      // Имитация отправки кода на телефон
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Открываем модальное окно для подтверждения
-      setIsVerificationModalOpen(true);
-    } catch (error) {
-      alert("Произошла ошибка при отправке заявки. Попробуйте еще раз.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleVerifyCode = async (code: string) => {
-    // Имитация проверки кода
-    await new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Для демонстрации принимаем любой код
-        if (code === "0000") {
-          reject(new Error("Неверный код"));
-        } else {
-          resolve(true);
-        }
-      }, 1500);
-    });
-
-    // Если код верный, завершаем процесс
-    finishSubmission();
-  };
-
-  const handleResendCode = async () => {
-    // Имитация повторной отправки кода
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return true;
-  };
-
-  const finishSubmission = () => {
-    // Сброс формы после успешной отправки
-    setFormData({
-      firstName: "",
-      lastName: "",
-      middleName: "",
-      phone: "",
-      email: "",
-      birthYear: "",
-      passport: "",
-      address: "",
-    });
-
-    alert("Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.");
-  };
 
   return (
     <>
@@ -539,12 +341,7 @@ export function ConsultationForm() {
                           : "Получить консультацию"}
                       </Button>
 
-                      <p className="text-xs text-gray-500 text-center leading-relaxed">
-                        Нажимая кнопку, вы соглашаетесь с{" "}
-                        <span className="text-primary hover:text-primary-600 cursor-pointer">
-                          политикой конфиденциальности
-                        </span>
-                      </p>
+                      <PrivacyText className="text-xs text-gray-500 text-center leading-relaxed" />
                     </form>
                   </CardContent>
                 </Card>
@@ -556,7 +353,7 @@ export function ConsultationForm() {
 
       <VerificationModal
         isOpen={isVerificationModalOpen}
-        onClose={() => setIsVerificationModalOpen(false)}
+        onClose={closeVerificationModal}
         onVerify={handleVerifyCode}
         phone={formData.phone}
         onResendCode={handleResendCode}

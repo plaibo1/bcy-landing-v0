@@ -1,0 +1,1 @@
+export const EXTERNAL_API_BASE_URL = 'http://localhost:80'
