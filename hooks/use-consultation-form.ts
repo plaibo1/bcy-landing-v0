@@ -27,6 +27,7 @@ export function useConsultationForm(options: UseConsultationFormOptions = {}) {
     birthYear: "",
     passport: "",
     address: "",
+    privacyConsent: false,
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -34,19 +35,23 @@ export function useConsultationForm(options: UseConsultationFormOptions = {}) {
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
 
   // Обработка изменения поля
-  const handleInputChange = (field: keyof FormData, value: string) => {
-    // Применяем маску к значению
-    const maskedValue = applyFieldMask(field, value);
-
-    // Обновляем данные формы
-    setFormData((prev) => ({ ...prev, [field]: maskedValue }));
+  const handleInputChange = (
+    field: keyof FormData,
+    value: string | boolean
+  ) => {
+    if (field === "privacyConsent") {
+      setFormData((prev) => ({ ...prev, [field]: value as boolean }));
+    } else {
+      // Применяем маску к значению
+      const maskedValue = applyFieldMask(field, value as string);
+      setFormData((prev) => ({ ...prev, [field]: maskedValue }));
+    }
 
     // Очищаем ошибку для поля при изменении
     if (errors[field as keyof FormErrors]) {
       setErrors((prev) => clearFieldError(prev, field as keyof FormErrors));
     }
   };
-
   // Валидация формы
   const validateFormData = (): boolean => {
     const validationErrors = validateForm(formData);
@@ -132,6 +137,7 @@ export function useConsultationForm(options: UseConsultationFormOptions = {}) {
       birthYear: "",
       passport: "",
       address: "",
+      privacyConsent: false,
     });
     setErrors({});
   };

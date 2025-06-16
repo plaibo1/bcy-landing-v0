@@ -7,7 +7,7 @@ import {
 
 export function FAQ() {
   return (
-    <section className="py-24 bg-gray-50">
+    <section id="faq" className="py-24 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">
@@ -91,7 +91,7 @@ export function FAQ() {
             </AccordionItem>
 
             <AccordionItem
-              value="item-4"
+              value="item-5"
               className="bg-white rounded-2xl px-8 py-2 shadow-md border-0"
             >
               <AccordionTrigger className="text-left text-xl font-medium py-4">

@@ -1,4 +1,4 @@
-import { Gavel } from "lucide-react"
+import { Scale } from "lucide-react";
 
 export function Footer() {
   return (
@@ -8,8 +8,8 @@ export function Footer() {
           {/* Левая часть */}
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <Gavel className="h-8 w-8 text-primary-400" />
-              <span className="text-2xl font-bold">ЮрПомощь</span>
+              <Scale className="h-8 w-8 text-primary-400" />
+              <span className="text-2xl font-bold">Свобода от долгов</span>
             </div>
             <div className="text-gray-400 space-y-1">
               <div>09:00 - 18:00 пн-пт</div>
@@ -26,9 +26,9 @@ export function Footer() {
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; 2024 ЮрПомощь. Все права защищены.</p>
+          <p>&copy; 2025 Свобода от долгов. Все права защищены.</p>
         </div>
       </div>
     </footer>
-  )
+  );
 }

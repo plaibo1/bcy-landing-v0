@@ -1,17 +1,9 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Shield, Clock, CheckCircle } from "lucide-react";
+import { Shield, Clock, CheckCircle, Scale } from "lucide-react";
+import { CallToActionButtons } from "../featureComponents/call-to-action-buttons";
 
 export function CallToAction() {
-  const scrollToConsultation = () => {
-    // Находим элемент с id "consultation" и скроллим к нему
-    const consultationSection = document.getElementById("consultation");
-    if (consultationSection) {
-      consultationSection.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <section className="py-16 bg-gradient-to-br from-gray-50 via-white to-gray-100 text-gray-900 relative overflow-hidden">
       {/* Паттерн сетки */}
@@ -69,6 +61,25 @@ export function CallToAction() {
               Не ждите, пока долги станут неподъемными. Начните процедуру
               банкротства уже сегодня.
             </p>
+
+            {/* Новый блок с законодательной информацией */}
+            <div className="bg-white/80 backdrop-blur-sm p-4 md:p-6 rounded-xl border border-primary-100 shadow-sm max-w-3xl mx-auto">
+              <div className="flex items-start space-x-3">
+                <div className="bg-primary-50 p-2 rounded-lg flex-shrink-0">
+                  <Scale className="h-5 w-5 text-primary" />
+                </div>
+                <div className="text-left">
+                  <p className="text-sm md:text-base text-gray-700 leading-relaxed">
+                    <span className="font-semibold text-primary">
+                      Согласно 127-ФЗ "О несостоятельности (банкротстве)"
+                    </span>
+                    <br />
+                    Вы можете полностью или частично освободить себя от долгов и
+                    кредитов и начать свободную жизнь!
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Преимущества */}
@@ -115,38 +126,14 @@ export function CallToAction() {
           </div>
 
           {/* Кнопки действий */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-4">
-            <Button
-              size="lg"
-              onClick={scrollToConsultation}
-              className="bg-primary hover:bg-primary-600 text-white px-6 py-5 h-auto text-base font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group"
-            >
-              Начать процедуру
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-            </Button>
-
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={scrollToConsultation}
-              className="border-2 border-primary text-primary hover:bg-primary-50 px-6 py-5 h-auto text-base font-semibold rounded-xl backdrop-blur-sm bg-white/50"
-            >
-              Консультация
-            </Button>
-          </div>
+          <CallToActionButtons />
 
           {/* Дополнительная информация */}
-          <div className="pt-8 border-t border-gray-200">
-            <p className="text-gray-600 text-sm">
-              ⚡ Первая консультация бесплатно • 📞 Ответим в течение 15 минут •
-              🛡️ Конфиденциальность гарантирована
-            </p>
-          </div>
-          {/* <div className="pt-4 border-t border-gray-200">
+          <div className="pt-4 border-t border-gray-200">
             <p className="text-gray-600 text-xs">
               ⚡ Первая консультация бесплатно • 📞 Ответим в течение 15 минут
             </p>
-          </div> */}
+          </div>
         </div>
       </div>
     </section>

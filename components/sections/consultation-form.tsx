@@ -99,7 +99,7 @@ export function ConsultationForm() {
 
                 <div className="bg-primary-50 p-6 rounded-2xl border border-primary-100">
                   <p className="text-primary-800 font-medium text-center">
-                    ⭐ Более 2000 успешно решенных дел
+                    ⭐ Более 1000 успешно решенных дел
                   </p>
                 </div>
               </div>
@@ -331,17 +331,24 @@ export function ConsultationForm() {
                         </div>
                       </div>
 
+                      <PrivacyText
+                        checked={formData.privacyConsent}
+                        onCheckedChange={(checked) =>
+                          handleInputChange("privacyConsent", checked)
+                        }
+                        error={errors.privacyConsent}
+                        className="text-xs text-gray-500"
+                      />
+
                       <Button
                         type="submit"
                         className="w-full bg-primary hover:bg-primary-600 text-white h-12 text-base font-medium rounded-xl mt-6"
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || !formData.privacyConsent}
                       >
                         {isSubmitting
                           ? "Отправляем..."
                           : "Получить консультацию"}
                       </Button>
-
-                      <PrivacyText className="text-xs text-gray-500 text-center leading-relaxed" />
                     </form>
                   </CardContent>
                 </Card>

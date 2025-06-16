@@ -8,6 +8,7 @@ export interface FormData {
   birthYear: string;
   passport: string;
   address: string;
+  privacyConsent: boolean;
 }
 
 export interface FormErrors {
@@ -17,6 +18,7 @@ export interface FormErrors {
   phone?: string;
   email?: string;
   birthYear?: string;
+  privacyConsent?: string;
 }
 
 // Маска для телефона
@@ -111,6 +113,12 @@ export function validateForm(formData: FormData): FormErrors {
     if (isNaN(birthYear) || birthYear < 1940 || birthYear > currentYear - 18) {
       errors.birthYear = "Введите корректный год рождения (возраст от 18 лет)";
     }
+  }
+
+  // Валидация согласия на обработку данных
+  if (!formData.privacyConsent) {
+    errors.privacyConsent =
+      "Необходимо дать согласие на обработку персональных данных";
   }
 
   return errors;

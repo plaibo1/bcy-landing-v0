@@ -182,16 +182,23 @@ export function ConsultationFormHero() {
               </div>
             </div>
 
+            <PrivacyText
+              checked={formData.privacyConsent}
+              onCheckedChange={(checked) =>
+                handleInputChange("privacyConsent", checked)
+              }
+              error={errors.privacyConsent}
+              className="text-xs text-gray-500"
+            />
+
             <Button
               type="submit"
               className="w-full bg-primary hover:bg-primary-600"
               size="lg"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !formData.privacyConsent}
             >
               {isSubmitting ? "Отправляем..." : "Получить консультацию"}
             </Button>
-
-            <PrivacyText />
           </form>
         </CardContent>
       </Card>
