@@ -1,6 +1,7 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
-import { Scale, Phone } from "lucide-react";
+import { Scale } from "lucide-react";
 import { ConsultationModal } from "@/components/ui/consultation-modal";
 import { useConsultationModal } from "@/hooks/use-consultation-modal";
 

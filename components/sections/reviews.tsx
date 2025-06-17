@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
 
 interface Review {
@@ -8,6 +8,7 @@ interface Review {
   initials: string;
   rating: number;
   text: string;
+  imageSrc: string;
 }
 
 const reviews: Review[] = [
@@ -17,6 +18,7 @@ const reviews: Review[] = [
     initials: "А",
     rating: 5,
     text: "Обратился в 'Свободу от Долгов' в отчаянии — долги душили, коллекторы не давали жить. Команда профессионалов провела меня через банкротство с минимальным стрессом. Все долги списаны, теперь дышу свободно. Спасибо!",
+    imageSrc: "./images/reviews/andrew.png",
   },
   {
     id: 2,
@@ -24,6 +26,7 @@ const reviews: Review[] = [
     initials: "В",
     rating: 5,
     text: "Никогда не думал, что банкротство может быть таким… спокойным. Юристы 'Свободы от Долгов' взяли на себя все хлопоты: от документов до суда. Никаких нервов — только результат. Рекомендую!",
+    imageSrc: "./images/reviews/vasiliy.png",
   },
   {
     id: 3,
@@ -31,6 +34,7 @@ const reviews: Review[] = [
     initials: "М",
     rating: 5,
     text: "Долго боялся начинать процедуру, но 'Свобода от Долгов' развеяла все страхи. Четкие инструкции, сопровождение на каждом этапе — и вот я официально без долгов! Если сомневаетесь — не тяните, обращайтесь.",
+    imageSrc: "./images/reviews/max.png",
   },
   {
     id: 4,
@@ -38,6 +42,7 @@ const reviews: Review[] = [
     initials: "В",
     rating: 5,
     text: "Пробовала решить проблему с долгами сама, но только запуталась. 'Свобода от Долгов' сделала всё быстро и правильно: собрали документы, подали в суд, защитили от коллекторов. Теперь понимаю — лучше сразу к профессионалам!",
+    imageSrc: "./images/reviews/varvara.png",
   },
   {
     id: 5,
@@ -45,6 +50,7 @@ const reviews: Review[] = [
     initials: "Д",
     rating: 5,
     text: "Звонили из банков, угрожали коллекторы — казалось, выхода нет. 'Свобода от Долгов' не просто помогла списать долги, а вернула спокойствие. Суд прошел без проблем, теперь живу без этого груза. Огромное спасибо!",
+    imageSrc: "./images/reviews/dmitry.png",
   },
 ];
 
@@ -66,6 +72,10 @@ export function Reviews() {
       <CardHeader>
         <div className="flex items-center space-x-4">
           <Avatar className="h-14 w-14 border-2 border-primary-200">
+            <AvatarImage
+              src={review.imageSrc}
+              alt={`Защита от долгов, клиент ${review.name}`}
+            />
             <AvatarFallback className="bg-primary-100 text-primary text-lg font-medium">
               {review.initials}
             </AvatarFallback>
