@@ -8,6 +8,7 @@ export interface FormData {
   birthYear: string;
   passport: string;
   address: string;
+  amountOwed: string;
   privacyConsent: boolean;
 }
 
@@ -18,6 +19,7 @@ export interface FormErrors {
   phone?: string;
   email?: string;
   birthYear?: string;
+  amountOwed?: string;
   privacyConsent?: string;
 }
 
@@ -96,6 +98,12 @@ export function validateForm(formData: FormData): FormErrors {
     errors.phone = "Номер телефона обязателен для заполнения";
   } else if (phoneDigits.length !== 11) {
     errors.phone = "Номер телефона должен содержать 11 цифр";
+  }
+
+  if (!String(formData.amountOwed).trim()) {
+    errors.amountOwed = "Введите сумму долга";
+  } else if (isNaN(Number(formData.amountOwed))) {
+    errors.amountOwed = "Сумма долга должна быть числом";
   }
 
   // Валидация email (только если заполнен)

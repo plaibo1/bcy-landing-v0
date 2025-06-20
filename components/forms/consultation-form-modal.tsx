@@ -111,7 +111,7 @@ export function ConsultationFormModal({
         </div>
 
         {/* Контактные данные */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-3 gap-3">
           <div className="space-y-1">
             <Label
               htmlFor="modal-phone"
@@ -157,6 +157,29 @@ export function ConsultationFormModal({
             />
             {errors.email && (
               <p className="text-red-500 text-xs">{errors.email}</p>
+            )}
+          </div>
+
+          <div className="space-y-1">
+            <Label
+              htmlFor="amountOwed"
+              className="text-xs font-medium text-gray-700"
+            >
+              Сумма долга
+            </Label>
+            <Input
+              id="amountOwed"
+              placeholder="1000 ₽"
+              value={formData.amountOwed}
+              onChange={(e) => handleInputChange("amountOwed", e.target.value)}
+              className={`h-10 text-sm focus:ring-primary focus:border-primary ${
+                errors.amountOwed
+                  ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                  : ""
+              }`}
+            />
+            {errors.amountOwed && (
+              <p className="text-red-500 text-xs">{errors.amountOwed}</p>
             )}
           </div>
         </div>

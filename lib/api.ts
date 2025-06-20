@@ -6,6 +6,7 @@ export interface ApiFormData {
   middleName: string;
   lastName: string;
   phone: string;
+  amountOwed: number;
   email?: string;
   passportSerial?: string;
   passportNumber?: string;
@@ -77,6 +78,7 @@ function transformFormDataForApi(formData: FormData): ApiFormData {
     middleName: formData.middleName.trim(),
     lastName: formData.lastName.trim(),
     phone: normalizedPhone,
+    amountOwed: Number(formData.amountOwed),
     email: formData.email.trim() || undefined,
     passportSerial: passportSerial || undefined,
     passportNumber: passportNumber || undefined,
@@ -97,6 +99,8 @@ function validateApiData(apiData: ApiFormData): {
   if (!apiData.lastName) errors.push("Фамилия обязательна для заполнения");
   if (!apiData.middleName) errors.push("Отчество обязательно для заполнения");
   if (!apiData.phone) errors.push("Телефон обязателен для заполнения");
+  if (!apiData.amountOwed)
+    errors.push("Сумма долга обязательна для заполнения");
 
   if (apiData.phone && !/^\+7\d{10}$/.test(apiData.phone)) {
     errors.push("Некорректный формат телефона");
@@ -213,6 +217,8 @@ export async function sendVerificationCode(
       birthYear: "",
       passport: "",
       address: "",
+      amountOwed: "",
+      privacyConsent: false,
     }).phone;
 
     const response = await fetch("/api/verification-phone", {
@@ -259,6 +265,8 @@ export async function verifyPhoneCode(
       birthYear: "",
       passport: "",
       address: "",
+      amountOwed: "",
+      privacyConsent: false,
     }).phone;
 
     const response = await fetch("/api/verification-phone", {

@@ -17,18 +17,21 @@ interface UseConsultationFormOptions {
   onError?: (error: string) => void;
 }
 
+const initFormData = {
+  firstName: "",
+  lastName: "",
+  middleName: "",
+  phone: "",
+  email: "",
+  birthYear: "",
+  passport: "",
+  address: "",
+  privacyConsent: false,
+  amountOwed: "",
+};
+
 export function useConsultationForm(options: UseConsultationFormOptions = {}) {
-  const [formData, setFormData] = useState<FormData>({
-    firstName: "",
-    lastName: "",
-    middleName: "",
-    phone: "",
-    email: "",
-    birthYear: "",
-    passport: "",
-    address: "",
-    privacyConsent: false,
-  });
+  const [formData, setFormData] = useState<FormData>(initFormData);
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -128,17 +131,7 @@ export function useConsultationForm(options: UseConsultationFormOptions = {}) {
 
   // Сброс формы
   const resetForm = () => {
-    setFormData({
-      firstName: "",
-      lastName: "",
-      middleName: "",
-      phone: "",
-      email: "",
-      birthYear: "",
-      passport: "",
-      address: "",
-      privacyConsent: false,
-    });
+    setFormData(initFormData);
     setErrors({});
   };
 

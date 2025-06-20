@@ -101,7 +101,7 @@ export function ConsultationFormHero() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="phone">Номер телефона *</Label>
                 <Input
@@ -132,6 +132,30 @@ export function ConsultationFormHero() {
                 />
                 {errors.email && (
                   <p className="text-red-500 text-sm">{errors.email}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="amountOwed"
+                  className="text-xs font-medium text-gray-700"
+                >
+                  Сумма долга
+                </Label>
+                <Input
+                  id="amountOwed"
+                  placeholder="1000 ₽"
+                  value={formData.amountOwed}
+                  onChange={(e) =>
+                    handleInputChange("amountOwed", e.target.value)
+                  }
+                  className={`h-10 text-sm focus:ring-primary focus:border-primary ${
+                    errors.amountOwed
+                      ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                      : ""
+                  }`}
+                />
+                {errors.amountOwed && (
+                  <p className="text-red-500 text-xs">{errors.amountOwed}</p>
                 )}
               </div>
             </div>
