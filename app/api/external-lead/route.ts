@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Проксируем запрос на внешнее API
-    const response = await fetch(`${EXTERNAL_API_BASE_URL}/v1/external-lead`, {
+    const response = await fetch(`${EXTERNAL_API_BASE_URL}/v1/landing-lead`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
